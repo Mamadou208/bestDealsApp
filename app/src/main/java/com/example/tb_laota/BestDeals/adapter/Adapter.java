@@ -1,4 +1,4 @@
-package com.example.tb_laota.volleydemo.adapter;
+package com.example.tb_laota.BestDeals.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.example.tb_laota.volleydemo.Item;
-import com.example.tb_laota.volleydemo.R;
-import com.example.tb_laota.volleydemo.app.AppController;
+import com.example.tb_laota.BestDeals.Item;
+import com.example.tb_laota.BestDeals.R;
+import com.example.tb_laota.BestDeals.app.AppController;
 
 import java.util.List;
 

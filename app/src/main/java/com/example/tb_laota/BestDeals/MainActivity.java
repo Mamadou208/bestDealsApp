@@ -1,4 +1,4 @@
-package com.example.tb_laota.volleydemo;
+package com.example.tb_laota.BestDeals;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -6,13 +6,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.example.tb_laota.volleydemo.adapter.Adapter;
-import com.example.tb_laota.volleydemo.app.AppController;
+import com.example.tb_laota.BestDeals.adapter.Adapter;
+import com.example.tb_laota.BestDeals.app.AppController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,11 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    //private static final String url = "http://api.androidhive.info/json/movies.json";
+
     private static final String url = "http://192.168.56.1:8080/BestDealsApi/api/products";
     private ProgressDialog dialog;
     private List<Item> array = new ArrayList<Item>();
     private ListView listView;
+    private SearchView search;
     private Adapter adapter;
     private final String LOG_TAG = "App";
 
@@ -42,6 +47,43 @@ public class MainActivity extends AppCompatActivity {
         dialog=new ProgressDialog(this);
         dialog.setMessage("Loading...");
         dialog.show();
+
+        search=(SearchView) findViewById(R.id.searchView1);
+        search.setQueryHint("SearchView");
+
+        //*** setOnQueryTextFocusChangeListener ***
+        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                // TODO Auto-generated method stub
+
+                Toast.makeText(getBaseContext(), String.valueOf(hasFocus),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //*** setOnQueryTextListener ***
+        search.setOnQueryTextListener(new OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // TODO Auto-generated method stub
+
+                Toast.makeText(getBaseContext(), query,
+                        Toast.LENGTH_SHORT).show();
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // TODO Auto-generated method stub
+
+               // Toast.makeText(getBaseContext(), newText, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
 
         //Creat volley request obj
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(url, new Response.Listener<JSONArray>() {

@@ -16,7 +16,7 @@ GlobalNamespace: dto
 //DefaultImports: java.math.*,java.util.*,net.servicestack.client.*,com.google.gson.annotations.*,com.google.gson.reflect.*
 */
 
-package com.example.tb_laota.volleydemo.model;
+package com.example.tb_laota.BestDeals.model;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -25,7 +25,6 @@ import net.servicestack.client.*;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class dto
 {

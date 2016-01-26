@@ -1,4 +1,4 @@
-package com.example.tb_laota.volleydemo;
+package com.example.tb_laota.BestDeals;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;

@@ -1,6 +1,4 @@
-package com.example.tb_laota.volleydemo;
-
-import java.util.ArrayList;
+package com.example.tb_laota.BestDeals;
 
 /**
  * Created by Mamadou on 9/12/2015.

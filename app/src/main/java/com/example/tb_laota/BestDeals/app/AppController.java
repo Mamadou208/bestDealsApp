@@ -1,4 +1,4 @@
-package com.example.tb_laota.volleydemo.app;
+package com.example.tb_laota.BestDeals.app;
 
 import android.app.Application;
 import android.text.TextUtils;
@@ -7,7 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.example.tb_laota.volleydemo.BitmapCache;
+import com.example.tb_laota.BestDeals.BitmapCache;
 
 /**
  * Created by Mamadou on 9/12/2015.

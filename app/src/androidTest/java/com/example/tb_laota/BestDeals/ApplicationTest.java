@@ -1,4 +1,4 @@
-package com.example.tb_laota.volleydemo;
+package com.example.tb_laota.BestDeals;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
