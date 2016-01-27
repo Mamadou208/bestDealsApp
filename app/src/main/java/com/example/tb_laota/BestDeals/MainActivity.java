@@ -1,16 +1,19 @@
 package com.example.tb_laota.BestDeals;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private SearchView search;
     private Adapter adapter;
     private SpeechRecognizer recognizer;
-    private RecognitionListenerImpl listener = new RecognitionListenerImpl();;
+    private RecognitionListenerImpl listener = new RecognitionListenerImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new Adapter(this, array);
         listView.setAdapter(adapter);
 
-        dialog=new ProgressDialog(this);
+        dialog = new ProgressDialog(this);
         dialog.setMessage("Loading...");
         dialog.show();
 
@@ -100,15 +103,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Creat volley request obj
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(AppConfig.URL_PRODUCTS, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(AppConfig.URL_PRODUCTS, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 hideDialog();
                 //parsing json
-                for(int i=0;i<response.length();i++){
-                    try{
-                        JSONObject obj=response.getJSONObject(i);
-                        Item item=new Item();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        Item item = new Item();
                         item.setTitle(obj.getString("name"));
                         item.setImage(obj.getString("image"));
                         item.setDescription(obj.getString("description"));
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(MainActivity.class.getName(), "Trying to find group...");
 
                         array.add(item);
-                    }catch(JSONException ex){
+                    } catch (JSONException ex) {
                         ex.printStackTrace();
                     }
                 }
