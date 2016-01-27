@@ -15,7 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.tb_laota.BestDeals.app.AppConfig;
 import com.example.tb_laota.BestDeals.app.AppController;
-import com.example.tb_laota.BestDeals.helper.SQLiteHandler;
 import com.example.tb_laota.BestDeals.helper.SessionManager;
 
 import org.json.JSONException;
@@ -32,7 +31,6 @@ public class LoginActivity extends Activity {
     private EditText inputPassword;
     private ProgressDialog pDialog;
     private SessionManager session;
-    private SQLiteHandler db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +45,6 @@ public class LoginActivity extends Activity {
         // Progress dialog
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
-
-        // SQLite database handler
-        db = new SQLiteHandler(getApplicationContext());
 
         // Session manager
         session = new SessionManager(getApplicationContext());

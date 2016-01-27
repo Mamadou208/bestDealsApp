@@ -16,7 +16,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tb_laota.BestDeals.app.AppConfig;
-import com.example.tb_laota.BestDeals.helper.SQLiteHandler;
 import com.example.tb_laota.BestDeals.helper.SessionManager;
 import org.json.JSONObject;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ public class RegisterActivity extends Activity {
     private EditText inputPassword;
     private ProgressDialog pDialog;
     private SessionManager session;
-    private SQLiteHandler db;
     public RequestQueue queue;
 
     @Override
