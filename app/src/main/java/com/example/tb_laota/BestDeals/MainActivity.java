@@ -1,6 +1,10 @@
 package com.example.tb_laota.BestDeals;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +35,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
+
     private ProgressDialog dialog;
     private List<Item> array = new ArrayList<Item>();
     private ListView listView;
@@ -43,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView) findViewById(R.id.list_item);
-        adapter=new Adapter(this,array);
+        adapter = new Adapter(this, array);
         listView.setAdapter(adapter);
 
         dialog=new ProgressDialog(this);
         dialog.setMessage("Loading...");
         dialog.show();
 
-        search=(SearchView) findViewById(R.id.searchView1);
+        search = (SearchView) findViewById(R.id.searchView1);
         search.setQueryHint("SearchView");
 
         //*** setOnQueryTextFocusChangeListener ***
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 // TODO Auto-generated method stub
 
-               // Toast.makeText(getBaseContext(), newText, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getBaseContext(), newText, Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -124,27 +130,49 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
-
+                    //start the scanning activity from the com.google.zxing.client.android.SCAN intent
+                    Intent intent = new Intent(ACTION_SCAN);
+                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
                     startActivityForResult(intent, 0);
-                } catch (Exception e) {
-
-                    Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
-                    startActivity(marketIntent);
-
+                } catch (ActivityNotFoundException anfe) {
+                    //on catch, show the download dialog
+                    showDialog(MainActivity.this, "No Scanner Found", "Download a scanner code activity?", "Yes", "No").show();
                 }
             }
         });
     }
 
-    public void hideDialog(){
-        if(dialog !=null){
+
+    private static AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
+        AlertDialog.Builder downloadDialog = new AlertDialog.Builder(act);
+        downloadDialog.setTitle(title);
+        downloadDialog.setMessage(message);
+        downloadDialog.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Uri uri = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                try {
+                    act.startActivity(intent);
+                } catch (ActivityNotFoundException anfe) {
+                    Log.i("Anfe", anfe.getMessage(), anfe);
+                }
+            }
+        });
+        downloadDialog.setNegativeButton(buttonNo, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        return downloadDialog.show();
+    }
+
+
+    public void hideDialog() {
+        if (dialog != null) {
             dialog.dismiss();
-            dialog=null;
+            dialog = null;
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -157,10 +185,13 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
+                //get the extras that are returned from the intent
                 String contents = data.getStringExtra("SCAN_RESULT");
-                Toast.makeText(MainActivity.this, contents, Toast.LENGTH_LONG);
+                String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+                Toast toast = Toast.makeText(this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG);
+                toast.show();
             }
-            if(resultCode == RESULT_CANCELED){
+            if (resultCode == RESULT_CANCELED) {
                 //handle cancel
             }
         }
