@@ -8,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +28,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.tb_laota.BestDeals.adapter.Adapter;
 import com.example.tb_laota.BestDeals.app.AppConfig;
 import com.example.tb_laota.BestDeals.app.AppController;
+import com.example.tb_laota.BestDeals.helper.RecognitionListenerImpl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private SearchView search;
     private Adapter adapter;
+    private SpeechRecognizer recognizer;
+    private RecognitionListenerImpl listener = new RecognitionListenerImpl();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +146,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        ImageButton speechRecognition = (ImageButton) findViewById(R.id.speechRecognition);
+        speechRecognition.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "com.domain.app");
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "speak now...");
+
+                recognizer.startListening(intent);
+            }
+        });
+
+        this.recognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this.getApplicationContext());
+        recognizer.setRecognitionListener(listener);
     }
 
 
