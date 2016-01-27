@@ -174,7 +174,7 @@ public class LoginActivity extends Activity {
         };
 
         // Adding request to request queue
-        AppController.getmInstance().addToRequesQueue(strReq, tag_string_req);
+        AppController.getApplication().addToRequesQueue(strReq, tag_string_req);
     }
 
     private void showDialog() {

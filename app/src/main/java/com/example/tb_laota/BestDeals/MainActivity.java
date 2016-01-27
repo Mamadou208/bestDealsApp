@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.tb_laota.BestDeals.adapter.Adapter;
+import com.example.tb_laota.BestDeals.app.AppConfig;
 import com.example.tb_laota.BestDeals.app.AppController;
 
 import org.json.JSONArray;
@@ -30,13 +31,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String url = "http://192.168.56.1:8080/BestDealsApi/api/products";
     private ProgressDialog dialog;
     private List<Item> array = new ArrayList<Item>();
     private ListView listView;
     private SearchView search;
     private Adapter adapter;
-    private final String LOG_TAG = "App";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Creat volley request obj
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(AppConfig.URL_PRODUCTS, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 hideDialog();
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         item.setDescription(obj.getString("description"));
                         item.setRate(((Number) obj.get("price")).doubleValue());
                         item.setCreatedAt(obj.getString("createdAt"));
-                        Log.d(LOG_TAG, "Trying to find group...");
+                        Log.d(MainActivity.class.getName(), "Trying to find group...");
 
                         array.add(item);
                     }catch(JSONException ex){
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        AppController.getmInstance().addToRequesQueue(jsonArrayRequest);
+        AppController.getApplication().addToRequesQueue(jsonArrayRequest);
 
         ImageButton qrButton = (ImageButton) findViewById(R.id.scanQrCodeButton);
         qrButton.setOnClickListener(new View.OnClickListener() {

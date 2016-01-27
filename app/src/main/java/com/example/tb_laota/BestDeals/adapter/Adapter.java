@@ -23,7 +23,7 @@ public class Adapter extends BaseAdapter{
     private LayoutInflater inflater;
     private Activity activity;
     private List<Item> items;
-    ImageLoader imageLoader= AppController.getmInstance().getmImageLoader();
+    ImageLoader imageLoader= AppController.getApplication().getmImageLoader();
     public Adapter(Activity activity,List<Item> items){
         this.activity=activity;
         this.items=items;
@@ -52,7 +52,7 @@ public class Adapter extends BaseAdapter{
             convertView=inflater.inflate(R.layout.custom_layout,null);
         }
         if(imageLoader==null)
-            imageLoader=AppController.getmInstance().getmImageLoader();
+            imageLoader=AppController.getApplication().getmImageLoader();
             NetworkImageView imageView= (NetworkImageView) convertView.findViewById(R.id.image_view);
             TextView title= (TextView) convertView.findViewById(R.id.tv_title);
             TextView rate= (TextView) convertView.findViewById(R.id.tv_rate);

@@ -1,19 +1,13 @@
 package com.example.tb_laota.BestDeals;
 
-/**
- * Created by Mamadou on 9/12/2015.
- */
 public class Item {
     public String title;
     public String image;
     public String description;
 
-
-
     public String createdAt;
     public int year;
     public double rate;
-    //private ArrayList<String> genre;
 
     public String getTitle() {
         return title;
@@ -48,18 +42,6 @@ public class Item {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
-
-    /*public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }*/
-
-   // public ArrayList<String> getGenre() {
-       // return genre;
-    //}
 
     public void setDescription(String description) {
         this.description = description;
