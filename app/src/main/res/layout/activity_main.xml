@@ -37,11 +37,11 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="0dp"
         android:layout_marginTop="3dp"
-        android:layout_toLeftOf="@+id/imageButton2"
+        android:layout_toLeftOf="@+id/scanQrCodeButton"
         android:src="@android:drawable/ic_btn_speak_now" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/scanQrCodeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -56,7 +56,7 @@
         android:layout_height="match_parent"
         android:dividerHeight="5dp"
         android:listSelector="@drawable/list_row_select"
-        android:layout_below="@+id/imageButton2">
+        android:layout_below="@+id/scanQrCodeButton">
 
     </ListView>
 
