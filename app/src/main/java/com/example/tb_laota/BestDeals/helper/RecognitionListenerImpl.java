@@ -8,20 +8,29 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class RecognitionListenerImpl implements RecognitionListener {
+
+    //We need a interface to preform a callback
+    public interface Consumer<T> {
+        void apply(T t);
+    }
+
+    private final Consumer<String> callback;
+
+    public RecognitionListenerImpl(Consumer<String> callBack) {
+        this.callback = callBack;
+    }
+
     @Override
     public void onResults(Bundle results) {
-        ArrayList<String> voiceResults = results
-                .getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
+        ArrayList<String> voiceResults = results.getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
         if (voiceResults == null) {
             Log.e(RecognitionListenerImpl.class.getName(), "No voice results");
         } else {
-            Log.d(RecognitionListenerImpl.class.getName(), "Printing matches: ");
+            StringBuilder sb = new StringBuilder();
             for (String match : voiceResults) {
-                Log.d(RecognitionListenerImpl.class.getName(), match);
+                sb.append(match).append("%20");
             }
-            for (String match : voiceResults) {
-                System.out.println(match);
-            }
+            callback.apply(sb.toString());
         }
     }
 

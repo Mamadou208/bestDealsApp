@@ -1,19 +1,16 @@
 package com.example.tb_laota.BestDeals;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -37,12 +34,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
+    public static final int SCAN_QR_CODE_INTENT = 5;
 
     private ProgressDialog dialog;
     private List<Item> array = new ArrayList<Item>();
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private SearchView search;
     private Adapter adapter;
     private SpeechRecognizer recognizer;
-    private RecognitionListenerImpl listener = new RecognitionListenerImpl();
+    private RecognitionListenerImpl listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,70 +68,8 @@ public class MainActivity extends AppCompatActivity {
         search = (SearchView) findViewById(R.id.searchView1);
         search.setQueryHint("SearchView");
 
-        //*** setOnQueryTextFocusChangeListener ***
-        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // TODO Auto-generated method stub
-
-                Toast.makeText(getBaseContext(), String.valueOf(hasFocus),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //*** setOnQueryTextListener ***
-        search.setOnQueryTextListener(new OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // TODO Auto-generated method stub
-
-                Toast.makeText(getBaseContext(), query,
-                        Toast.LENGTH_SHORT).show();
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // TODO Auto-generated method stub
-
-                // Toast.makeText(getBaseContext(), newText, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
         //Creat volley request obj
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(AppConfig.URL_PRODUCTS, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                hideDialog();
-                //parsing json
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject obj = response.getJSONObject(i);
-                        Item item = new Item();
-                        item.setTitle(obj.getString("name"));
-                        item.setImage(obj.getString("image"));
-                        item.setDescription(obj.getString("description"));
-                        item.setRate(((Number) obj.get("price")).doubleValue());
-                        item.setCreatedAt(obj.getString("createdAt"));
-                        Log.d(MainActivity.class.getName(), "Trying to find group...");
-
-                        array.add(item);
-                    } catch (JSONException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
+        JsonArrayRequest jsonArrayRequest = createProductRequest();
         AppController.getApplication().addToRequesQueue(jsonArrayRequest);
 
         ImageButton qrButton = (ImageButton) findViewById(R.id.scanQrCodeButton);
@@ -142,13 +80,24 @@ public class MainActivity extends AppCompatActivity {
                     //start the scanning activity from the com.google.zxing.client.android.SCAN intent
                     Intent intent = new Intent(ACTION_SCAN);
                     intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, SCAN_QR_CODE_INTENT);
                 } catch (ActivityNotFoundException anfe) {
                     //on catch, show the download dialog
                     showDialog(MainActivity.this, "No Scanner Found", "Download a scanner code activity?", "Yes", "No").show();
                 }
             }
         });
+
+        listener = new RecognitionListenerImpl(new RecognitionListenerImpl.Consumer<String>() {
+            @Override
+            public void apply(String s) {
+                String voiceResult = String.format("/voice/%s", s);
+                JsonArrayRequest productRequest = createProductRequest(voiceResult);
+                AppController.getApplication().addToRequesQueue(productRequest);
+            }
+        });
+        recognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this.getApplicationContext());
+        recognizer.setRecognitionListener(listener);
 
         ImageButton speechRecognition = (ImageButton) findViewById(R.id.speechRecognition);
         speechRecognition.setOnClickListener(new View.OnClickListener() {
@@ -163,13 +112,9 @@ public class MainActivity extends AppCompatActivity {
                 recognizer.startListening(intent);
             }
         });
-
-        this.recognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this.getApplicationContext());
-        recognizer.setRecognitionListener(listener);
     }
 
-
-    private static AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
+    private AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
         AlertDialog.Builder downloadDialog = new AlertDialog.Builder(act);
         downloadDialog.setTitle(title);
         downloadDialog.setMessage(message);
@@ -191,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         return downloadDialog.show();
     }
 
-
     public void hideDialog() {
         if (dialog != null) {
             dialog.dismiss();
@@ -200,41 +144,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
-                //get the extras that are returned from the intent
+            if (resultCode == SCAN_QR_CODE_INTENT) {
                 String contents = data.getStringExtra("SCAN_RESULT");
-                String format = data.getStringExtra("SCAN_RESULT_FORMAT");
-                Toast toast = Toast.makeText(this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG);
-                toast.show();
-            }
-            if (resultCode == RESULT_CANCELED) {
-                //handle cancel
+                String barcodeUrl = String.format("/barcode/%s", contents);
+                AppController.getApplication().addToRequesQueue(createProductRequest(barcodeUrl));
             }
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private JsonArrayRequest createProductRequest() {
+        return createProductRequest("");
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    @NonNull
+    private JsonArrayRequest createProductRequest(String urlContext) {
+        return new JsonArrayRequest(AppConfig.URL_PRODUCTS + urlContext, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                hideDialog();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        Item item = new Item();
+                        try {
+                            item.setCreatedAt(obj.getString("createdAt"));
+                            item.setTitle(obj.getString("name"));
+                            item.setImage(obj.getString("image"));
+                            item.setDescription(obj.getString("description"));
+                            item.setRate(((Number) obj.get("price")).doubleValue());
+                            array.add(item);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
     }
 }
