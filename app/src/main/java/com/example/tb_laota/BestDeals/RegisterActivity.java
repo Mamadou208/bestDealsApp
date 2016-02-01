@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,14 +18,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tb_laota.BestDeals.app.AppConfig;
 import com.example.tb_laota.BestDeals.helper.SessionManager;
+
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-
-
-
 public class RegisterActivity extends Activity {
+
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnRegister;
 
@@ -86,11 +87,10 @@ public class RegisterActivity extends Activity {
 
     }
 
-
     /**
      * Function to store user in MySQL database will post params(tag, name,
      * email, password) to register url
-     * */
+     */
     private void registerUser(final String name, final String email,
                               final String password) {
         /*Post data*/
@@ -100,7 +100,7 @@ public class RegisterActivity extends Activity {
         jsonParams.put("name", name);
         jsonParams.put("password", password);
 
-        JsonObjectRequest postRequest = new JsonObjectRequest( Request.Method.POST, AppConfig.URL_REGISTER,
+        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, AppConfig.URL_REGISTER,
 
                 new JSONObject(jsonParams),
                 new Response.Listener<JSONObject>() {

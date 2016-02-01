@@ -21,7 +21,9 @@ public class Item {
         return image;
     }
 
-    public String getDescription() {return description;}
+    public String getDescription() {
+        return description;
+    }
 
     public void setImage(String image) {
         this.image = image;
@@ -46,6 +48,8 @@ public class Item {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Item(){}
+
+    public Item() {
+    }
 
 }
