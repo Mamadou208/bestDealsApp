@@ -15,7 +15,6 @@
     <string name="btn_link_to_login">Already registred! Login Me.</string>
     <string name="title_activity_register">Register</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="QR_Code">QR Code</string>
-    <string name="bar_code">bar code</string>
+    <string name="successful_registration">Account successfully registered!</string>
+    <string name="loading">Loading…</string>
 </resources>

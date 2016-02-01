@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         dialog = new ProgressDialog(this);
-        dialog.setMessage("Loading...");
+        dialog.setMessage(getString(R.string.loading));
         dialog.show();
 
         search = (SearchView) findViewById(R.id.searchView1);
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "com.domain.app");
-                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "speak now...");
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now...");
 
                 recognizer.startListening(intent);
             }
