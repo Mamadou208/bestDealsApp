@@ -7,19 +7,17 @@ import android.util.Log;
 
 public class SessionManager {
 
-    // Shared Preferences
-    SharedPreferences pref;
-
-    Editor editor;
-    Context context;
+    // Shared preferences file name
+    private static final String PREF_NAME = "AndroidHiveLogin";
+    private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
 
     // Shared pref mode
     private int PRIVATE_MODE = 0;
 
-    // Shared preferences file name
-    private static final String PREF_NAME = "AndroidHiveLogin";
-
-    private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
+    // Shared Preferences
+    private SharedPreferences pref;
+    private Context context;
+    private Editor editor;
 
     public SessionManager(Context context) {
         this.context = context;
@@ -28,7 +26,6 @@ public class SessionManager {
     }
 
     public void setLogin(boolean isLoggedIn) {
-
         editor.putBoolean(KEY_IS_LOGGEDIN, isLoggedIn);
 
         // commit changes

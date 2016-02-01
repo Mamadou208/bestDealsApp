@@ -9,53 +9,52 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.example.tb_laota.BestDeals.BitmapCache;
 
-/**
- * Created by Mamadou on 9/12/2015.
- */
 public class AppController extends Application {
-    public static final String TAG = AppController.class.getSimpleName();
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
-    private static AppController mInstance;
+
+    private static final String TAG = AppController.class.getSimpleName();
+    private static AppController instance;
+
+    private RequestQueue requestQueue;
+    private ImageLoader imageLoader;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mInstance = this;
+        instance = this;
     }
 
     public static AppController getApplication() {
-        return mInstance;
+        return instance;
     }
 
-    public RequestQueue getmRequestQueue() {
-        if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+    private RequestQueue getRequestQueue() {
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-        return mRequestQueue;
+        return requestQueue;
     }
 
-    public ImageLoader getmImageLoader() {
-        getmRequestQueue();
-        if (mImageLoader == null) {
-            mImageLoader = new ImageLoader(this.mRequestQueue, new BitmapCache());
+    public ImageLoader getImageLoader() {
+        getRequestQueue();
+        if (imageLoader == null) {
+            imageLoader = new ImageLoader(this.requestQueue, new BitmapCache());
         }
-        return this.mImageLoader;
+        return this.imageLoader;
     }
 
     public <T> void addToRequesQueue(Request<T> request, String tag) {
         request.setTag((TextUtils.isEmpty(tag) ? TAG : tag));
-        getmRequestQueue().add(request);
+        getRequestQueue().add(request);
     }
 
     public <T> void addToRequesQueue(Request<T> request) {
-        request.setTag(TAG);
-        getmRequestQueue().add(request);
+        request.setTag(AppController.class.getName());
+        getRequestQueue().add(request);
     }
 
     public void cancelPendingRequest(Object tag) {
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(tag);
+        if (requestQueue != null) {
+            requestQueue.cancelAll(tag);
         }
     }
 }

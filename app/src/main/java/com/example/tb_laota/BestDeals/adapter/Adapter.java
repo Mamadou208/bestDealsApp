@@ -18,10 +18,11 @@ import java.util.List;
 
 public class Adapter extends BaseAdapter {
 
+    private ImageLoader imageLoader = AppController.getApplication().getImageLoader();
+
     private LayoutInflater inflater;
     private Activity activity;
     private List<Item> items;
-    ImageLoader imageLoader = AppController.getApplication().getmImageLoader();
 
     public Adapter(Activity activity, List<Item> items) {
         this.activity = activity;
@@ -50,9 +51,6 @@ public class Adapter extends BaseAdapter {
         }
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.custom_layout, null);
-        }
-        if (imageLoader == null) {
-            imageLoader = AppController.getApplication().getmImageLoader();
         }
 
         NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.image_view);
